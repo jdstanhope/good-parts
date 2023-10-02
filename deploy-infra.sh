@@ -6,10 +6,21 @@ AWS_ACCOUNT_ID=`aws sts get-caller-identity --profile $CLI_PROFILE --query "Acco
 CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
 
 # These values come from the env
-# GH_ACESS_TOKEN
+# GH_ACCESS_TOKEN
 # GH_OWNER
 # GH_REPO
 # GH_BRANCH
+
+echo -e "\n\n\nDeploying setup.yml\n"
+aws cloudformation deploy \
+    --region $REGION \
+    --profile $CLI_PROFILE \
+    --stack-name $STACK_NAME-setup \
+    --template-file setup.yml \
+    --no-fail-on-empty-changeset \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --parameter-overrides \
+        CodePipelineBucket=$CODEPIPELINE_BUCKET
 
 echo -e "\n\n\nDeploying main.yml\n"
 aws cloudformation deploy \

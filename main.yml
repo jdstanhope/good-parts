@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
+
 Parameters:
   EC2InstanceType:
     Type: String
@@ -21,6 +22,7 @@ Parameters:
     Type: String
     NoEcho: true
     Description: 'The GitHub personal access token.'
+
 Resources:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -38,6 +40,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
+
   InstanceRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -55,8 +58,9 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
+
   DeploymentRole:
-    Type: "AWS::IAM::Role"
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -64,12 +68,13 @@ Resources:
           Effect: Allow
           Principal:
             Service:
-              - "codepipeline.amazonaws.com"
-              - "codedeploy.amazonaws.com"
-              - "codebuild.amazonaws.com"
+              - codepipeline.amazonaws.com
+              - codedeploy.amazonaws.com
+              - codebuild.amazonaws.com
           Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/PowerUserAccess
+
   BuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -83,11 +88,13 @@ Resources:
         Image: aws/codebuild/standard:2.0
       Source:
         Type: CODEPIPELINE
+
   DeploymentApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
       ApplicationName: !Ref AWS::StackName
       ComputePlatform: Server
+
   StagingDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
     DependsOn: Instance
@@ -100,6 +107,7 @@ Resources:
         - Key: aws:cloudformation:stack-name
           Type: KEY_AND_VALUE
           Value: !Ref AWS::StackName
+
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -153,27 +161,30 @@ Resources:
                 Provider: CodeDeploy
               Configuration:
                 ApplicationName: !Ref DeploymentApplication
-                DeplpoymentGroupName: !Ref StagingDeploymentGroup
+                DeploymentGroupName: !Ref StagingDeploymentGroup
               RunOrder: 1
-  PipelineWebhook:
-    Type: AWS::CodePipeline::Webhook
-    Properties:
-      Authentication: GITHUB_HMAC
-      AuthenticationConfiguration:
-        SecretToken: !Ref GitHubPersonalAccessToken
-      Filters:
-        - JsonPath: $.ref
-          MatchEquals: 'refs/heads/{Branch}'
-      TargetPipeline: !Ref Pipeline
-      TargetAction: Source
-      Name: !Sub 'webhook-${AWS::StackName}'
-      TargetPipelineVersion: !GetAtt Pipeline.Version
-      RegisterWithThirdParty: true
+
+  # PipelineWebhook:
+  #   Type: AWS::CodePipeline::Webhook
+  #   Properties:
+  #     Authentication: GITHUB_HMAC
+  #     AuthenticationConfiguration:
+  #       SecretToken: !Ref GitHubPersonalAccessToken
+  #     Filters:
+  #       - JsonPath: $.ref
+  #         MatchEquals: 'refs/heads/{Branch}'
+  #     TargetPipeline: !Ref Pipeline
+  #     TargetAction: Source
+  #     Name: !Sub 'webhook-${AWS::StackName}'
+  #     TargetPipelineVersion: !GetAtt Pipeline.Version
+  #     RegisterWithThirdParty: true
+
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - Ref: InstanceRole
+
   Instance:
     Type: AWS::EC2::Instance
     CreationPolicy:
