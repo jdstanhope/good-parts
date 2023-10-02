@@ -4,10 +4,10 @@ phases:
   install:
     runtime-versions:
       nodejs: 10
-  pre_builds:
+  pre_build:
     commands:
       - npm ci
-  builds:
+  build:
     commands:
       - npm run build
 artifacts:
