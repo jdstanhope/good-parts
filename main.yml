@@ -203,7 +203,7 @@ Resources:
               mode: "000755"
           comands:
             00-install-cd-agent:
-              command: "/home/ec2-user/install auto"
+              command: "./install auto"
               cwd: "/home/ec2-user/"
     Properties:
       ImageId: !Ref EC2AMI
