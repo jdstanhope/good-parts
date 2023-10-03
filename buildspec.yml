@@ -12,10 +12,10 @@ phases:
       - npm run build
 artifacts:
   files:
-    - ./start-server.sh
-    - ./stop-serivce.sh
-    - ./server.js
-    - ./package.json
-    - ./package-lock.json
-    - ./appspec.yml
-    - './node_modules/**/*'
+    - start-service.sh
+    - stop-service.sh
+    - index.js
+    - package.json
+    - package-lock.json
+    - appspec.yml
+    - 'node_modules/**/*'
