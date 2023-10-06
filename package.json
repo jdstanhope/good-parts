@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./node_modules/pm2/bin/pm2 start index.js --name good-parts --log '../logs/app.log'",
+    "start": "node ./node_modules/pm2/bin/pm2 start index.js --name good-parts --log '../logs/app.log' --update-env -- --STACKNAME ${STACK_NAME",
     "stop": "node ./node_modules/pm2/bin/pm2 stop good-parts",
     "build": "echo 'Building...'"
   },
