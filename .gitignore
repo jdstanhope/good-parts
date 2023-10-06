@@ -4,3 +4,5 @@ logs/
 
 # copies of private secrets and stuff we don't want in source control
 *.pem
+
+cfn_output/
