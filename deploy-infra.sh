@@ -6,6 +6,7 @@ AWS_ACCOUNT_ID=`aws sts get-caller-identity --profile $CLI_PROFILE --query "Acco
 CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
 CFN_BUCKET="$STACK_NAME-cfn-$AWS_ACCOUNT_ID"
 DOMAIN=lets-play-tag.com
+CERT=`aws acm list-certificates --region us-east-1 --profile default --output text --query "CertificateSummaryList[?DomainName=='lets-play-tag.com'].CertificateArn | [0]"`
 
 # These values come from the env
 # GH_ACCESS_TOKEN
@@ -55,7 +56,8 @@ aws cloudformation deploy \
         GitHubBranch=$GH_BRANCH \
         GitHubPersonalAccessToken=$GH_ACCESS_TOKEN \
         CodePipelineBucket=$CODEPIPELINE_BUCKET \
-        Domain=$DOMAIN
+        Domain=$DOMAIN \
+        Certificate=$CERT
 
 if [ $? -eq 0 ]; then
     aws cloudformation list-exports \
