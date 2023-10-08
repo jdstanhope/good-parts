@@ -22,6 +22,8 @@ Parameters:
     Type: String
     NoEcho: true
     Description: 'The GitHub personal access token.'
+  Domain:
+    Type: String
 
 Resources:
 
@@ -33,6 +35,8 @@ Resources:
       Parameters:
         EC2InstanceType2: !Ref EC2InstanceType
         EC2AMI2: !Ref EC2AMI
+        Domain: !Ref Domain
+        SubDomain: staging
         
   Prod:
     Type: AWS::CloudFormation::Stack
@@ -43,6 +47,8 @@ Resources:
       Parameters:
         EC2InstanceType2: !Ref EC2InstanceType
         EC2AMI2: !Ref EC2AMI
+        Domain: !Ref Domain
+        SubDomain: prod
         
   DeploymentRole:
     Type: AWS::IAM::Role

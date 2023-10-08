@@ -5,6 +5,7 @@ EC2_INSTANCE_TYPE=t2.micro
 AWS_ACCOUNT_ID=`aws sts get-caller-identity --profile $CLI_PROFILE --query "Account" --output text`
 CODEPIPELINE_BUCKET="$STACK_NAME-$REGION-codepipeline-$AWS_ACCOUNT_ID"
 CFN_BUCKET="$STACK_NAME-cfn-$AWS_ACCOUNT_ID"
+DOMAIN=lets-play-tag.com
 
 # These values come from the env
 # GH_ACCESS_TOKEN
@@ -53,7 +54,8 @@ aws cloudformation deploy \
         GitHubRepo=$GH_REPO \
         GitHubBranch=$GH_BRANCH \
         GitHubPersonalAccessToken=$GH_ACCESS_TOKEN \
-        CodePipelineBucket=$CODEPIPELINE_BUCKET
+        CodePipelineBucket=$CODEPIPELINE_BUCKET \
+        Domain=$DOMAIN
 
 if [ $? -eq 0 ]; then
     aws cloudformation list-exports \

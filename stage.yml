@@ -5,8 +5,23 @@ Parameters:
     Type: String
   EC2AMI2:
     Type: String
+  Domain:
+    Type: String
+  SubDomain:
+    Type: String
 
 Resources:
+  DNS:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub "${Domain}."
+      Name: !Sub "${SubDomain}.${Domain}."
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer.DNSName
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+      Comment: !Sub "DNS record for ${SubDomain}.${Domain}."
+
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -276,8 +291,8 @@ Resources:
 
 Outputs:
   LBEndpoint:
-    Description: The DNS name for the created load balancer
-    Value: !Sub "http://${LoadBalancer.DNSName}:80"
+    Description: The DNS name for the stage
+    Value: !Sub "http://${DNS}"
   ScalingGroup:
     Description: The Auto Scaling Group
     Value: !Ref ScalingGroup
